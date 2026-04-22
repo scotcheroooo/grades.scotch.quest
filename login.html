@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>login · grades.scotch.quest</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+body{display:flex;align-items:center;justify-content:center;min-height:100vh}
+.login-box{width:400px;max-width:95vw;border:1px solid var(--border-hi);border-radius:8px;background:var(--bg2);box-shadow:0 0 60px rgba(57,255,110,0.08)}
+.login-header{background:var(--bg3);border-bottom:1px solid var(--border);padding:24px;text-align:center}
+.login-logo{font-family:'VT323',monospace;font-size:32px;color:var(--green);text-shadow:0 0 14px var(--green)}
+.login-logo span{color:var(--cyan)}
+.login-sub{font-size:11px;color:var(--text-dim);letter-spacing:.12em;margin-top:4px}
+.login-body{padding:28px}
+.login-prompt{font-size:12px;color:var(--text-dim);margin-bottom:20px}
+.login-error{display:none;background:rgba(255,68,68,0.1);border:1px solid rgba(255,68,68,0.3);border-radius:4px;padding:10px 14px;font-size:12px;color:var(--red);margin-bottom:16px}
+.login-error.show{display:block}
+.login-footer{padding:16px 24px;border-top:1px solid var(--border);text-align:center;font-size:11px;color:var(--text-dim)}
+.login-footer a{color:var(--green-dim);text-decoration:none}
+.login-footer a:hover{color:var(--green)}
+.ps-note{font-size:10px;color:var(--text-dim);margin-top:12px;padding:10px 14px;border:1px solid var(--border);border-radius:4px;line-height:1.6}
+.ps-note span{color:var(--amber)}
+</style>
+</head>
+<body class="crt">
+<div class="login-box shell">
+  <div class="login-header">
+    <div class="login-logo">grades.<span>scotch.quest</span></div>
+    <div class="login-sub">academic terminal · authenticate to continue</div>
+  </div>
+  <div class="login-body">
+    <div class="login-prompt">&gt; enter credentials<span class="cursor">_</span></div>
+    <div class="login-error" id="login-error">! authentication failed — check your credentials</div>
+    <div class="form-group">
+      <label>PowerSchool Username</label>
+      <input type="text" id="username" placeholder="firstname.lastname" autocomplete="username">
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" id="password" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <div class="form-group" style="margin-bottom:8px">
+      <label>School District URL</label>
+      <input type="text" id="ps-url" placeholder="yourschool.powerschool.com">
+    </div>
+    <div class="ps-note">
+      <span>ℹ</span> This skin connects to your school's PowerSchool instance via the <span>PowerSchool Public API</span>. Your credentials are sent directly to your school's server — grades.scotch.quest never stores them.
+    </div>
+    <br>
+    <button class="btn" onclick="doLogin()" style="width:100%">[ authenticate ]</button>
+  </div>
+  <div class="login-footer">
+    <a href="https://scotch.quest">← scotch.quest</a>
+    &nbsp;·&nbsp;
+    <a href="#" onclick="demoLogin()">demo mode</a>
+  </div>
+</div>
+
+<script>
+// ── DEMO MODE: sets fake session so you can browse all pages without a real PS server ──
+function demoLogin() {
+  const user = {
+    name: 'james.pliley',
+    studentId: '100421',
+    school: 'Demo High School',
+    grade: '11',
+    token: 'demo',
+    psUrl: 'demo'
+  };
+  sessionStorage.setItem('sq_user', JSON.stringify(user));
+  window.location.href = 'index.html';
+}
+
+// ── REAL LOGIN: calls your PowerSchool server's OAuth endpoint ──
+async function doLogin() {
+  const username = document.getElementById('username').value.trim();
+  const password = document.getElementById('password').value;
+  const psUrl    = document.getElementById('ps-url').value.trim();
+
+  if (!username || !password || !psUrl) {
+    showError('! all fields required');
+    return;
+  }
+
+  const btn = document.querySelector('.btn');
+  btn.textContent = '[ authenticating... ]';
+  btn.disabled = true;
+
+  try {
+    // PowerSchool OAuth2 — see CONNECTION_GUIDE.md for full setup
+    const credentials = btoa(`${encodeURIComponent(username)}:${encodeURIComponent(password)}`);
+    const resp = await fetch(`https://${psUrl}/oauth/access_token`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Authorization': `Basic ${credentials}`
+      },
+      body: 'grant_type=password'
+    });
+
+    if (!resp.ok) throw new Error('auth failed');
+
+    const data = await resp.json();
+    const user = {
+      name: username,
+      token: data.access_token,
+      psUrl: psUrl,
+      studentId: data.student_id || ''
+    };
+    sessionStorage.setItem('sq_user', JSON.stringify(user));
+    window.location.href = 'index.html';
+
+  } catch (e) {
+    showError('! authentication failed — check URL and credentials');
+    btn.textContent = '[ authenticate ]';
+    btn.disabled = false;
+  }
+}
+
+function showError(msg) {
+  const el = document.getElementById('login-error');
+  el.textContent = msg;
+  el.classList.add('show');
+}
+
+document.addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+</script>
+</body>
+</html>
