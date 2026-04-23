@@ -217,15 +217,33 @@ tr.sa td:first-child::before{background:var(--amb)}
 const D = {
   student:{ name:'James Pliley', user:'james.pliley', id:'12345', grade:'11',
             school:'Your High School', term:'Q4 — Spring 2026', gpa:'3.7', counselor:'Ms. Torres' },
-  courses:[
-    {p:'1',name:'AP Computer Science A',code:'CSA401',tchr:'Harrison, T.',room:'214',cr:3.0,grade:'A+',pct:98.4,lc:'A',trend:'▲',miss:0},
-    {p:'2',name:'AP Lang & Composition', code:'ENG401',tchr:'Reyes, M.',   room:'108',cr:3.0,grade:'B+',pct:89.1,lc:'B',trend:'▲',miss:0},
-    {p:'3',name:'Pre-Calculus',          code:'MTH350',tchr:'Chen, D.',    room:'306',cr:3.0,grade:'A-',pct:92.8,lc:'A',trend:'▶',miss:0},
-    {p:'4',name:'US History',            code:'HIS301',tchr:'Kaminsky, J.',room:'201',cr:2.5,grade:'C+',pct:77.3,lc:'C',trend:'▼',miss:2},
-    {p:'5',name:'Physics',               code:'SCI320',tchr:'Okafor, K.', room:'118',cr:3.0,grade:'B', pct:84.6,lc:'B',trend:'▲',miss:0},
-    {p:'6',name:'Studio Art',            code:'ART210',tchr:'Park, S.',   room:'004',cr:1.5,grade:'A', pct:95.2,lc:'A',trend:'▶',miss:0},
-    {p:'7',name:'Spanish III',           code:'SPA310',tchr:'Vega, R.',   room:'112',cr:2.5,grade:'B+',pct:87.9,lc:'B',trend:'▶',miss:0},
-  ],
+  courses:[// In your index.html shared.js, replace the D.courses array with:
+
+async function loadRealData() {
+  return new Promise(resolve => {
+    // Ask the extension for its stored PS data
+    chrome.storage.local.get('psData', d => {
+      if (d.psData && d.psData.courses.length > 0) {
+        D.courses = d.psData.courses.map(c => ({
+          p:     c.period || '?',
+          name:  c.name,
+          grade: c.grade,
+          pct:   c.pct,
+          lc:    c.grade?.[0] || 'A',
+          tchr:  c.teacher,
+          // ...map remaining fields
+        }));
+      }
+      resolve();
+    });
+  });
+}
+
+// Call before pageInit():
+window.addEventListener('DOMContentLoaded', async () => {
+  await loadRealData();
+  pageInit();
+});],
   assignments:[
     {name:'Binary Trees Lab',           course:'AP Computer Science A',date:'2026-04-18',score:100,max:100,cat:'Lab',  status:'graded'},
     {name:'Rhetorical Analysis Essay',  course:'AP Lang & Composition', date:'2026-04-16',score:88, max:100,cat:'Essay',status:'graded'},
