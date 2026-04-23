@@ -206,7 +206,7 @@ tr.sa td:first-child::before{background:var(--amb)}
 
         <div class="footer">
           <span>grades.scotch.quest · Q4 — Spring 2026</span>
-          <div class="fl"><a href="https://scotch.quest">scotch.quest</a><a href="CONNECT.html">setup guide</a><a href="login.html" onclick="sessionStorage.clear()">logout</a></div>
+          <div class="fl"><a href="https://scotch.quest">scotch.quest</a><a href="CONNECT.html">setup guide</a><a href="index.html" onclick="sessionStorage.clear()">logout</a></div>
         </div>
       </main>
     </div>
@@ -314,7 +314,7 @@ function gc(l){return{A:'var(--g)',B:'var(--cyn)',C:'var(--yel)',D:'var(--amb)',
 function pill(s){return{graded:'<span class="pill green">graded</span>',missing:'<span class="pill red">missing</span>',upcoming:'<span class="pill cyan">upcoming</span>',present:'<span class="pill green">present</span>',absent:'<span class="pill red">absent</span>',tardy:'<span class="pill amber">tardy</span>',late:'<span class="pill amber">late</span>',excused:'<span class="pill yellow">excused</span>'}[s]||`<span class="pill">${s}</span>`;}
 function du(d){const diff=Math.ceil((new Date(d)-new Date())/86400000);if(diff<0)return`${Math.abs(diff)}d ago`;if(diff===0)return'today';return`in ${diff}d`;}
 function sc(p){if(p>=90)return'var(--g)';if(p>=80)return'var(--cyn)';if(p>=70)return'var(--yel)';if(p>=60)return'var(--amb)';return'var(--red)';}
-function auth(){if(sessionStorage.getItem('gsq_loggedin')!=='1'){window.location.href='login.html';return false;}return true;}
+function auth(){if(sessionStorage.getItem('gsq_loggedin')!=='1'){window.location.href='index.html';return false;}return true;}
 
 
 function nav(active){
@@ -331,7 +331,7 @@ function nav(active){
     pages.map(p=>`<a href="${p.h}" class="nitem${p.h===active?' active':''}"><span class="px">&gt;</span> ${p.l}${p.badge?`<span class="nbadge${p.red?' r':''}">${p.badge}</span>`:''}</a>`).join('')+
     `<div class="ndiv"></div><div class="nlabel">account</div>
     <a href="https://scotch.quest" class="nitem"><span class="px">~/</span> scotch.quest</a>
-    <a href="login.html" class="nitem" onclick="sessionStorage.clear()"><span class="px">~/</span> logout</a>`;
+    <a href="index.html" class="nitem" onclick="sessionStorage.clear()"><span class="px">~/</span> logout</a>`;
 }
 function topbar(crumb){
   return `<header class="topbar">
