@@ -25,25 +25,35 @@ window.PS_DATA = {
   transcript: [ /* ... your existing transcript */ ]
 };
 
-// 2. PASTE THIS HERE: This overwrites the placeholder courses with real ones
-async function loadRealData() {
-  return new Promise(resolve => {
-    chrome.storage.local.get('psData', d => {
-      if (d.psData && d.psData.courses.length > 0) {
-        // Change 'D.courses' to 'PS_DATA.courses' to match your file
-        window.PS_DATA.courses = d.psData.courses.map(c => ({
-          p:     c.period || '?',
-          name:  c.name,
-          grade: c.grade,
-          pct:   c.pct,
-          lc:    c.grade?.[0] || 'A',
-          tchr:  c.teacher,
-        }));
-      }
-      resolve();
-    });
-  });
+async function loadFromProxy() {
+  try {
+    const res = await fetch('http://localhost:3001/api/grades'); // or your deployed URL
+    const json = await res.json();
+    if (json.ok && json.courses.length) {
+      D.courses = json.courses.map(c => ({
+        p:     c.period,
+        name:  c.name,
+        grade: c.grade || '—',
+        pct:   c.pct || 0,
+        lc:    (c.grade || 'A')[0],
+        tchr:  c.teacher,
+        room:  c.room,
+        cr:    3.0,
+        miss:  0,
+        trend: '▶',
+        code:  '',
+      }));
+    }
+  } catch(e) {
+    console.warn('[gsq] proxy unreachable, using demo data');
+  }
 }
+
+window.addEventListener('DOMContentLoaded', async () => {
+  if (!auth()) return;
+  await loadFromProxy();
+  // ... rest of your init
+});
 
 // 3. PASTE THIS AT THE VERY BOTTOM:
 window.addEventListener('DOMContentLoaded', async () => {
