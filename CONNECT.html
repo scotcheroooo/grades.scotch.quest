@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PowerSchool Setup Guide — grades.scotch.quest</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--g:#39ff6e;--gd:#1a7a38;--gf:#0d3d1c;--gp:#a8ffbf;--bg:#050905;--bg2:#080f08;--bg3:#0e1a0e;--b:rgba(57,255,110,0.18);--bh:rgba(57,255,110,0.45);--red:#ff4444;--yel:#ffd700;--cyn:#00ffe1;--amb:#ffb347;--dim:rgba(57,255,110,0.5)}
+html{scrollbar-width:thin;scrollbar-color:var(--gd) var(--bg)}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--gd);border-radius:3px}
+body{background:var(--bg);color:var(--g);font-family:'Share Tech Mono',monospace;font-size:14px;min-height:100vh;position:relative;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.08) 2px,rgba(0,0,0,0.08) 4px)}
+body::after{content:'';position:fixed;inset:0;z-index:9998;pointer-events:none;background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,0.75) 100%)}
+@keyframes flicker{0%,100%{opacity:1}92%{opacity:1}93%{opacity:.96}94%{opacity:1}}
+.crt{animation:flicker 8s infinite}
+.topbar{background:var(--bg2);border-bottom:1px solid var(--b);padding:0 24px;height:48px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:200}
+.logo{font-family:'VT323',monospace;font-size:26px;color:var(--g);text-shadow:0 0 10px var(--g);text-decoration:none;letter-spacing:.04em}
+.logo span{color:var(--cyn)}
+.crumb{font-size:12px;color:var(--dim);display:flex;align-items:center;gap:5px}
+.crumb a{color:var(--gd);text-decoration:none}.crumb a:hover{color:var(--g)}
+.wrap{max-width:820px;margin:0 auto;padding:32px 24px 60px}
+h1{font-family:'VT323',monospace;font-size:42px;color:var(--g);text-shadow:0 0 16px var(--g);letter-spacing:.04em;margin-bottom:6px}
+.sub{font-size:12px;color:var(--dim);margin-bottom:32px;letter-spacing:.08em}
+h2{font-family:'VT323',monospace;font-size:26px;color:var(--cyn);text-shadow:0 0 8px var(--cyn);margin:32px 0 12px;letter-spacing:.04em}
+h3{font-size:13px;color:var(--gp);letter-spacing:.1em;text-transform:uppercase;margin:20px 0 8px}
+p{color:var(--gp);line-height:1.85;margin-bottom:12px;font-size:13px}
+.warn{background:rgba(255,215,0,.06);border:1px solid rgba(255,215,0,.25);border-radius:6px;padding:12px 16px;margin:14px 0;font-size:12px;color:var(--yel)}
+.warn::before{content:'⚠ ';font-size:14px}
+.info{background:rgba(0,255,225,.06);border:1px solid rgba(0,255,225,.2);border-radius:6px;padding:12px 16px;margin:14px 0;font-size:12px;color:var(--cyn)}
+.info::before{content:'i  '}
+.good{background:rgba(57,255,110,.06);border:1px solid rgba(57,255,110,.2);border-radius:6px;padding:12px 16px;margin:14px 0;font-size:12px;color:var(--g)}
+.good::before{content:'✓  '}
+pre{background:var(--bg2);border:1px solid var(--b);border-radius:6px;padding:16px 18px;margin:12px 0 18px;overflow-x:auto;font-size:12px;line-height:1.7;color:var(--gp)}
+code{color:var(--g)}
+.comment{color:var(--dim)}
+.step{display:flex;gap:14px;margin-bottom:18px;padding:14px 16px;border:1px solid var(--b);border-radius:6px;background:var(--bg2)}
+.step-num{font-family:'VT323',monospace;font-size:28px;color:var(--cyn);text-shadow:0 0 8px var(--cyn);flex-shrink:0;width:28px}
+.step-body{flex:1}
+.step-title{font-size:13px;color:var(--gp);margin-bottom:5px;letter-spacing:.05em}
+.step-desc{font-size:12px;color:var(--dim);line-height:1.7}
+.toc{border:1px solid var(--b);border-radius:6px;padding:16px 20px;background:var(--bg2);margin-bottom:32px}
+.toc-title{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);margin-bottom:10px}
+.toc a{display:block;font-size:12px;color:var(--gd);text-decoration:none;padding:3px 0}
+.toc a:hover{color:var(--g)}
+.toc a::before{content:'> ';color:var(--gd)}
+.divider{height:1px;background:var(--b);margin:28px 0}
+.pill{display:inline-block;font-size:10px;padding:2px 8px;border-radius:3px}
+.pill.green{background:rgba(57,255,110,.12);color:var(--g);border:1px solid rgba(57,255,110,.25)}
+.pill.red{background:rgba(255,68,68,.12);color:var(--red);border:1px solid rgba(255,68,68,.25)}
+.pill.yellow{background:rgba(255,215,0,.12);color:var(--yel);border:1px solid rgba(255,215,0,.25)}
+.back{font-size:11px;color:var(--gd);border:1px solid var(--b);padding:5px 13px;border-radius:3px;text-decoration:none;transition:all .15s}
+.back:hover{border-color:var(--bh);color:var(--g)}
+</style>
+</head>
+<body class="crt">
+<header class="topbar">
+  <div style="display:flex;align-items:center;gap:18px">
+    <a href="https://scotch.quest" class="logo">scotch.<span>quest</span></a>
+    <div class="crumb"><a href="https://scotch.quest">~</a><span>/</span><a href="index.html">grades</a><span>/</span><span>setup guide</span></div>
+  </div>
+  <a href="index.html" class="back">← back to grades</a>
+</header>
+
+<div class="wrap">
+  <h1>PowerSchool Setup Guide_</h1>
+  <div class="sub">// how to connect grades.scotch.quest to your real PowerSchool account</div>
+
+  <div class="toc">
+    <div class="toc-title">// table of contents</div>
+    <a href="#reality-check">Reality check — what's actually possible</a>
+    <a href="#option-a">Option A: Browser extension (easiest)</a>
+    <a href="#option-b">Option B: Proxy server (recommended)</a>
+    <a href="#option-c">Option C: PowerSchool API (if your school allows it)</a>
+    <a href="#swap-data">Swapping the demo data</a>
+    <a href="#deploy">Deploying grades.scotch.quest</a>
+    <a href="#auth">Making login actually authenticate</a>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <h2 id="reality-check">// Reality Check</h2>
+
+  <p>Before we get into it — PowerSchool doesn't have a public API you can just call from a website. Here's what's actually going on under the hood and what your real options are.</p>
+
+  <div class="warn">PowerSchool's student-facing data is locked behind your school district's login portal. There's no official API key you can request as a student. Every method below involves some level of workaround.</div>
+
+  <p>Your three real options, ranked from easiest to most powerful:</p>
+
+  <div class="step"><div class="step-num">A</div><div class="step-body"><div class="step-title">Browser Extension <span class="pill green">easiest</span></div><div class="step-desc">A Chrome/Firefox extension scrapes your PowerSchool page while you're logged in and sends the data to your site. No server required. Works offline. Main downside: you have to be logged into PS in the same browser.</div></div></div>
+  <div class="step"><div class="step-num">B</div><div class="step-body"><div class="step-title">Proxy Server <span class="pill yellow">recommended</span></div><div class="step-desc">A small Node.js or Python server (runs on your machine or a free host like Railway/Render) logs into PowerSchool on your behalf using your credentials, scrapes or fetches the data, and serves it to your site as JSON. This is what most student-built PS skins actually do.</div></div></div>
+  <div class="step"><div class="step-num">C</div><div class="step-body"><div class="step-title">Official API <span class="pill red">school must enable it</span></div><div class="step-desc">PowerSchool has a real REST API, but it's only accessible if your district's PowerSchool admin enables it and gives you OAuth credentials. Most schools don't give students access. Worth asking your IT department though.</div></div></div>
+
+  <div class="divider"></div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <h2 id="option-a">// Option A — Browser Extension</h2>
+  <p>This is the fastest way to get real data showing. The extension runs in your browser, reads your PowerSchool page, and makes the data available to your site via <code>window.postMessage</code> or local storage.</p>
+
+  <h3>Step 1 — Create the extension</h3>
+  <p>Create a folder called <code>gsq-extension/</code> with these files:</p>
+
+  <pre><span class="comment">// gsq-extension/manifest.json</span>
+{
+  <code>"manifest_version"</code>: 3,
+  <code>"name"</code>: "grades.scotch.quest sync",
+  <code>"version"</code>: "1.0",
+  <code>"permissions"</code>: ["storage", "scripting"],
+  <code>"content_scripts"</code>: [{
+    <code>"matches"</code>: ["*://YOUR-SCHOOL.powerschool.com/*"],
+    <code>"js"</code>: ["content.js"]
+  }],
+  <code>"action"</code>: { <code>"popup"</code>: "popup.html" }
+}</pre>
+
+  <pre><span class="comment">// gsq-extension/content.js — runs on your PS page</span>
+<span class="comment">// Scrapes grades from the PowerSchool student portal DOM</span>
+
+function scrapeGrades() {
+  const courses = [];
+
+  <span class="comment">// PowerSchool puts grades in a table — selectors vary by school theme</span>
+  <span class="comment">// Inspect your PS page and adjust these selectors</span>
+  const rows = document.querySelectorAll('table.linkDescList tr');
+
+  rows.forEach(row => {
+    const cells = row.querySelectorAll('td');
+    if (cells.length < 3) return;
+
+    courses.push({
+      name:   cells[0]?.innerText?.trim(),
+      grade:  cells[1]?.innerText?.trim(),
+      pct:    parseFloat(cells[2]?.innerText) || null,
+      period: cells[3]?.innerText?.trim(),
+      teacher:cells[4]?.innerText?.trim(),
+    });
+  });
+
+  return courses.filter(c => c.name);
+}
+
+<span class="comment">// Save to chrome.storage so popup + your site can read it</span>
+const data = { courses: scrapeGrades(), updatedAt: Date.now() };
+chrome.storage.local.set({ psData: data });
+console.log('[gsq] scraped', data.courses.length, 'courses');</pre>
+
+  <pre><span class="comment">// gsq-extension/popup.html — shows sync status</span>
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;&lt;style&gt;
+  body { background:#050905; color:#39ff6e; font-family:monospace;
+         padding:12px; width:220px; }
+  button { background:none; border:1px solid #39ff6e; color:#39ff6e;
+           font-family:monospace; padding:6px 14px; cursor:pointer;
+           border-radius:3px; width:100%; margin-top:8px; }
+  button:hover { background:rgba(57,255,110,.1); }
+  #status { font-size:11px; color:rgba(57,255,110,.5); margin-top:8px; }
+&lt;/style&gt;&lt;/head&gt;
+&lt;body&gt;
+  &lt;div&gt;grades.scotch.quest sync&lt;/div&gt;
+  &lt;button onclick="sync()"&gt;[ sync now ]&lt;/button&gt;
+  &lt;div id="status"&gt;checking...&lt;/div&gt;
+  &lt;script&gt;
+    chrome.storage.local.get('psData', d =&gt; {
+      if(d.psData) {
+        const ago = Math.round((Date.now()-d.psData.updatedAt)/60000);
+        document.getElementById('status').textContent =
+          `${d.psData.courses.length} courses · synced ${ago}m ago`;
+      } else {
+        document.getElementById('status').textContent = 'no data yet — open PowerSchool';
+      }
+    });
+    function sync(){
+      chrome.tabs.query({active:true},tabs=&gt;{
+        chrome.scripting.executeScript({target:{tabId:tabs[0].id},files:['content.js']});
+      });
+    }
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+
+  <h3>Step 2 — Load the extension</h3>
+  <div class="step"><div class="step-num">1</div><div class="step-body"><div class="step-title">Open Chrome → chrome://extensions</div><div class="step-desc">Turn on "Developer mode" in the top right corner.</div></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-body"><div class="step-title">Click "Load unpacked"</div><div class="step-desc">Select your <code>gsq-extension/</code> folder.</div></div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-body"><div class="step-title">Open your PowerSchool portal and log in</div><div class="step-desc">The content script runs automatically. Click the extension icon to confirm it synced.</div></div></div>
+
+  <h3>Step 3 — Read the data in your site</h3>
+  <pre><span class="comment">// In your index.html shared.js, replace the D.courses array with:</span>
+
+async function loadRealData() {
+  return new Promise(resolve => {
+    <span class="comment">// Ask the extension for its stored PS data</span>
+    chrome.storage.local.get('psData', d => {
+      if (d.psData && d.psData.courses.length > 0) {
+        D.courses = d.psData.courses.map(c => ({
+          p:     c.period || '?',
+          name:  c.name,
+          grade: c.grade,
+          pct:   c.pct,
+          lc:    c.grade?.[0] || 'A',
+          tchr:  c.teacher,
+          // ...map remaining fields
+        }));
+      }
+      resolve();
+    });
+  });
+}
+
+<span class="comment">// Call before pageInit():</span>
+window.addEventListener('DOMContentLoaded', async () => {
+  await loadRealData();
+  pageInit();
+});</pre>
+
+  <div class="divider"></div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <h2 id="option-b">// Option B — Proxy Server (Recommended)</h2>
+  <p>A Node.js server runs on your machine (or free cloud host). It logs into PowerSchool using your credentials, scrapes the grades page, and exposes them as a JSON API that your site calls. This works from any browser and doesn't require an extension.</p>
+
+  <div class="warn">You're storing your PS password on a server. Only do this on a server you control. Never commit credentials to GitHub — use environment variables.</div>
+
+  <h3>Step 1 — Set up the proxy server</h3>
+  <pre><span class="comment"># In your terminal:</span>
+mkdir gsq-proxy && cd gsq-proxy
+npm init -y
+npm install express axios cheerio cors dotenv</pre>
+
+  <pre><span class="comment">// gsq-proxy/server.js</span>
+require('dotenv').config();
+const express = require('express');
+const axios   = require('axios');
+const cheerio = require('cheerio');
+const cors    = require('cors');
+
+const app = express();
+app.use(cors({ origin: 'https://grades.scotch.quest' }));
+
+const PS_BASE = process.env.PS_URL;   <span class="comment">// e.g. https://ps.yourschool.org</span>
+const PS_USER = process.env.PS_USER;  <span class="comment">// your PS username</span>
+const PS_PASS = process.env.PS_PASS;  <span class="comment">// your PS password</span>
+
+let sessionCookie = null;
+
+async function psLogin() {
+  <span class="comment">// Step 1: get the login page to grab the CSRF token</span>
+  const loginPage = await axios.get(`${PS_BASE}/public/home.html`);
+  const $ = cheerio.load(loginPage.data);
+  const pstoken = $('input[name="pstoken"]').val();
+  const cookies = loginPage.headers['set-cookie']?.join('; ') || '';
+
+  <span class="comment">// Step 2: POST credentials</span>
+  const loginRes = await axios.post(
+    `${PS_BASE}/guardian/home.html`,
+    new URLSearchParams({
+      account:   PS_USER,
+      pw:        PS_PASS,
+      ldappassword: PS_PASS,
+      pstoken,
+    }).toString(),
+    {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Cookie': cookies,
+      },
+      maxRedirects: 0,
+      validateStatus: s => s < 400,
+    }
+  );
+
+  sessionCookie = loginRes.headers['set-cookie']?.join('; ');
+  console.log('[gsq-proxy] logged into PowerSchool');
+}
+
+async function fetchGrades() {
+  if (!sessionCookie) await psLogin();
+
+  const res = await axios.get(`${PS_BASE}/guardian/home.html`, {
+    headers: { Cookie: sessionCookie }
+  });
+
+  const $ = cheerio.load(res.data);
+  const courses = [];
+
+  <span class="comment">// PowerSchool's grades table — inspect YOUR school's PS to confirm selectors</span>
+  $('table.linkDescList tbody tr').each((_, row) => {
+    const cells = $(row).find('td');
+    if (cells.length < 2) return;
+    courses.push({
+      period:  $(cells[0]).text().trim(),
+      name:    $(cells[1]).text().trim(),
+      grade:   $(cells[4]).text().trim(),
+      pct:     parseFloat($(cells[5]).text()) || null,
+      teacher: $(cells[2]).text().trim(),
+      room:    $(cells[3]).text().trim(),
+    });
+  });
+
+  return courses;
+}
+
+app.get('/api/grades', async (req, res) => {
+  try {
+    const grades = await fetchGrades();
+    res.json({ ok: true, courses: grades, updatedAt: Date.now() });
+  } catch (err) {
+    sessionCookie = null; <span class="comment">// force re-login next time</span>
+    res.status(500).json({ ok: false, error: err.message });
+  }
+});
+
+app.get('/api/health', (_, res) => res.json({ ok: true }));
+
+app.listen(3001, () => console.log('[gsq-proxy] running on :3001'));</pre>
+
+  <pre><span class="comment"># gsq-proxy/.env — NEVER commit this to git</span>
+PS_URL=https://ps.yourschool.org
+PS_USER=your_username
+PS_PASS=your_password</pre>
+
+  <pre><span class="comment"># Add to .gitignore:</span>
+.env
+node_modules/</pre>
+
+  <h3>Step 2 — Run it</h3>
+  <pre>node server.js
+<span class="comment"># Test it:</span>
+curl http://localhost:3001/api/grades</pre>
+
+  <h3>Step 3 — Call it from your site</h3>
+  <p>In <code>shared.js</code>, replace the static <code>D.courses</code> array with a fetch call:</p>
+  <pre><span class="comment">// In shared.js, inside DOMContentLoaded:</span>
+async function loadFromProxy() {
+  try {
+    const res = await fetch('http://localhost:3001/api/grades'); <span class="comment">// or your deployed URL</span>
+    const json = await res.json();
+    if (json.ok && json.courses.length) {
+      D.courses = json.courses.map(c => ({
+        p:     c.period,
+        name:  c.name,
+        grade: c.grade || '—',
+        pct:   c.pct || 0,
+        lc:    (c.grade || 'A')[0],
+        tchr:  c.teacher,
+        room:  c.room,
+        cr:    3.0,
+        miss:  0,
+        trend: '▶',
+        code:  '',
+      }));
+    }
+  } catch(e) {
+    console.warn('[gsq] proxy unreachable, using demo data');
+  }
+}
+
+window.addEventListener('DOMContentLoaded', async () => {
+  if (!auth()) return;
+  await loadFromProxy();
+  <span class="comment">// ... rest of your init</span>
+});</pre>
+
+  <h3>Step 4 — Deploy the proxy for free</h3>
+  <p>To run this 24/7 without keeping your laptop on, deploy to Railway or Render:</p>
+  <div class="step"><div class="step-num">1</div><div class="step-body"><div class="step-title">Push your proxy folder to a private GitHub repo</div><div class="step-desc">Make absolutely sure <code>.env</code> is in <code>.gitignore</code>.</div></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-body"><div class="step-title">Go to railway.app or render.com, connect the repo</div><div class="step-desc">Both have free tiers. Set your env variables (PS_URL, PS_USER, PS_PASS) in the dashboard — never hardcode them.</div></div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-body"><div class="step-title">Update your fetch URL to the deployed domain</div><div class="step-desc">e.g. <code>https://gsq-proxy.up.railway.app/api/grades</code></div></div></div>
+
+  <div class="divider"></div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <h2 id="option-c">// Option C — Official PowerSchool API</h2>
+  <p>If your school's IT department enables the PowerSchool API and gives you OAuth2 client credentials, you can use the official REST API. This is the cleanest approach but requires school cooperation.</p>
+
+  <div class="info">Ask your school IT admin: "Can I get API access to PowerSchool for a student project?" Reference the PowerSchool Developer Portal at <strong>developer.powerschool.com</strong>.</div>
+
+  <p>If they say yes, you'll get a <code>client_id</code> and <code>client_secret</code>. Then in your proxy server:</p>
+
+  <pre><span class="comment">// OAuth2 token exchange</span>
+const tokenRes = await axios.post(
+  `${PS_BASE}/oauth/access_token`,
+  'grant_type=client_credentials',
+  {
+    auth: { username: CLIENT_ID, password: CLIENT_SECRET },
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+  }
+);
+const token = tokenRes.data.access_token;
+
+<span class="comment">// Now call the API</span>
+const grades = await axios.get(
+  `${PS_BASE}/ws/v1/student/{studentId}/section`,
+  { headers: { Authorization: `Bearer ${token}` } }
+);</pre>
+
+  <div class="divider"></div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <h2 id="swap-data">// Swapping the Demo Data Right Now</h2>
+  <p>Even without a server, you can make the site show your real grades by just editing the data object in <strong>each HTML file</strong>. Search for <code>const D = {</code> and update the <code>courses</code>, <code>assignments</code>, <code>attendance</code>, etc. arrays with your real info. It's tedious but zero infrastructure required.</p>
+
+  <pre><span class="comment">// Find this in every .html file and update it:</span>
+courses:[
+  {p:'1', name:'YOUR REAL CLASS NAME', code:'CODE', tchr:'Teacher Name',
+   room:'101', cr:3.0, grade:'A', pct:94.2, lc:'A', trend:'▲', miss:0},
+  <span class="comment">// ... one entry per class</span>
+],</pre>
+
+  <div class="good">This is a good first step. Get it working with real data manually, then automate it with Option A or B when you're ready.</div>
+
+  <div class="divider"></div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <h2 id="deploy">// Deploying grades.scotch.quest</h2>
+  <p>The site is all static HTML — no build step. You can host it anywhere.</p>
+
+  <h3>Easiest: Neocities (since you already use it)</h3>
+  <pre><span class="comment"># Upload all .html files to a folder on Neocities</span>
+<span class="comment"># Set up a custom domain: grades.scotch.quest → your Neocities site</span>
+<span class="comment"># In your domain registrar (Cloudflare, etc.), add a CNAME:</span>
+grades  CNAME  your-username.neocities.org</pre>
+
+  <h3>Alternative: Cloudflare Pages (free, fast)</h3>
+  <pre><span class="comment"># Push your HTML files to a GitHub repo</span>
+<span class="comment"># Connect to Cloudflare Pages — it auto-deploys on every push</span>
+<span class="comment"># Add grades.scotch.quest as a custom domain in Cloudflare</span></pre>
+
+  <div class="divider"></div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <h2 id="auth">// Making Login Actually Authenticate</h2>
+  <p>Right now <code>login.html</code> accepts any username/password and just sets a <code>sessionStorage</code> flag. To make it real:</p>
+
+  <pre><span class="comment">// In login.html, replace the demo setTimeout block with:</span>
+async function doLogin() {
+  const u = document.getElementById('uname').value.trim();
+  const p = document.getElementById('pw').value;
+  if (!u || !p) { showErr(); return; }
+
+  document.getElementById('loading').style.display = 'block';
+
+  try {
+    <span class="comment">// POST to your proxy server which validates against PowerSchool</span>
+    const res = await fetch('https://your-proxy.railway.app/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: u, password: p })
+    });
+    const json = await res.json();
+
+    if (json.ok) {
+      sessionStorage.setItem('gsq_loggedin', '1');
+      sessionStorage.setItem('gsq_user', json.username);
+      sessionStorage.setItem('gsq_token', json.token); <span class="comment">// for API calls</span>
+      window.location.href = 'index.html';
+    } else {
+      showErr();
+    }
+  } catch (e) {
+    showErr();
+  }
+}</pre>
+
+  <pre><span class="comment">// Add this to your proxy server:</span>
+app.post('/api/login', express.json(), async (req, res) => {
+  const { username, password } = req.body;
+  try {
+    PS_USER = username;
+    PS_PASS = password;
+    sessionCookie = null;
+    await psLogin(); <span class="comment">// will throw if creds are wrong</span>
+    res.json({ ok: true, username, token: Buffer.from(username+':'+Date.now()).toString('base64') });
+  } catch(e) {
+    res.status(401).json({ ok: false, error: 'Invalid credentials' });
+  }
+});</pre>
+
+  <div class="divider"></div>
+
+  <h2>// Summary — Which Path to Take</h2>
+  <div class="step"><div class="step-num">1</div><div class="step-body"><div class="step-title">Just want it to look real right now?</div><div class="step-desc">Edit the <code>const D = {</code> data in each HTML file with your real grades. Takes 10 minutes.</div></div></div>
+  <div class="step"><div class="step-num">2</div><div class="step-body"><div class="step-title">Want it to auto-update without a server?</div><div class="step-desc">Build the Chrome extension (Option A). Load it unpacked. Visit PS → data syncs.</div></div></div>
+  <div class="step"><div class="step-num">3</div><div class="step-body"><div class="step-title">Want it fully automatic from any browser?</div><div class="step-desc">Build the Node proxy (Option B), deploy to Railway for free. Update your fetch URL.</div></div></div>
+  <div class="step"><div class="step-num">4</div><div class="step-body"><div class="step-title">Want official clean API access?</div><div class="step-desc">Ask your school IT for PowerSchool API credentials (Option C). Worth a shot.</div></div></div>
+
+  <div style="margin-top:32px;font-size:12px;color:var(--dim);text-align:center">
+    grades.scotch.quest · <a href="https://scotch.quest" style="color:var(--gd);text-decoration:none">scotch.quest</a> · <a href="index.html" style="color:var(--gd);text-decoration:none">back to grades</a>
+  </div>
+</div>
+</body>
+</html>

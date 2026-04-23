@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Gradebook — grades.scotch.quest</title>
+<title>Attendance — grades.scotch.quest</title>
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -147,23 +147,24 @@ tr.sa td:first-child::before{background:var(--amb)}
 </style>
 
 <style>
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:22px}
-.sched-row{display:grid;grid-template-columns:48px 1fr auto;align-items:center;gap:10px;padding:9px 16px;border-bottom:1px solid rgba(57,255,110,.05);cursor:pointer;transition:background .15s}
-.sched-row:hover{background:var(--gf)}
-.sped{font-family:'VT323',monospace;font-size:26px;color:var(--dim);text-align:center}
-.sped.now{color:var(--cyn);text-shadow:0 0 8px var(--cyn)}
-.scn{font-size:13px;color:var(--gp)}
-.scn.now{color:var(--cyn)}
-.scm{font-size:10px;color:var(--dim)}
-.sct{font-size:11px;color:var(--dim);white-space:nowrap}
-.sct.now{color:var(--cyn)}
-.now-pill{font-size:9px;background:rgba(0,255,225,.12);color:var(--cyn);border:1px solid rgba(0,255,225,.3);padding:2px 7px;border-radius:3px}
-.alert-row{display:flex;align-items:flex-start;gap:10px;padding:10px 16px;border-bottom:1px solid rgba(57,255,110,.05);cursor:pointer;transition:background .15s}
-.alert-row:hover{background:var(--gf)}
-.ai{font-size:14px;margin-top:2px}
-.ai.w{color:var(--red)}.ai.a{color:var(--yel)}.ai.i{color:var(--cyn)}
-.at{font-size:13px;color:var(--gp)}
-.am{font-size:10px;color:var(--dim);margin-top:2px}
+.att4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px}
+.acard{border:1px solid var(--b);border-radius:6px;padding:16px;background:var(--bg2);text-align:center}
+.anum{font-family:'VT323',monospace;font-size:42px;line-height:1}
+.anum.p{color:var(--g);text-shadow:0 0 10px var(--g)}
+.anum.a{color:var(--red);text-shadow:0 0 10px var(--red)}
+.anum.t{color:var(--amb);text-shadow:0 0 10px var(--amb)}
+.anum.ok{color:var(--cyn);text-shadow:0 0 10px var(--cyn)}
+.albl{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-top:4px}
+.pbar{height:6px;background:rgba(57,255,110,.08);border-radius:3px;margin:8px 0 3px;overflow:hidden}
+.pfill{height:100%;background:var(--g);box-shadow:0 0 5px var(--g);border-radius:3px}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.calh{text-align:center;font-size:9px;letter-spacing:.13em;text-transform:uppercase;color:var(--dim);padding:5px 0}
+.cald{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:12px;border-radius:4px}
+.cald.present{background:rgba(57,255,110,.12);color:var(--g)}
+.cald.absent{background:rgba(255,68,68,.15);color:var(--red)}
+.cald.tardy{background:rgba(255,179,71,.15);color:var(--amb)}
+.cald.other{color:rgba(57,255,110,.15)}
+.cald.today{outline:1px solid var(--cyn)}
 </style>
 </head>
 <body class="crt">
@@ -172,13 +173,13 @@ tr.sa td:first-child::before{background:var(--amb)}
     <div id="tb"></div>
     
 <div class="hband">
-  <div class="hprompt">&gt; grades.scotch.quest — Q4 Spring 2026<span class="cursor">_</span></div>
-  <div class="htitle">Gradebook<span class="cursor" style="font-size:28px">_</span></div>
+  <div class="hprompt">&gt; cat attendance.log --semester<span class="cursor">_</span></div>
+  <div class="htitle">Attendance<span class="cursor" style="font-size:28px">_</span></div>
   <div class="hstats">
-    <div class="sb"><div class="sv ok" id="stat-gpa">—</div><div class="sl">GPA</div></div>
-    <div class="sb"><div class="sv" id="stat-cls">—</div><div class="sl">Classes</div></div>
-    <div class="sb"><div class="sv bad" id="stat-miss">—</div><div class="sl">Missing</div></div>
-    <div class="sb"><div class="sv w">Q4</div><div class="sl">Term</div></div>
+    <div class="sb"><div class="sv ok" id="att-pct">—</div><div class="sl">Rate</div></div>
+    <div class="sb"><div class="sv" id="att-present">—</div><div class="sl">Present</div></div>
+    <div class="sb"><div class="sv bad" id="att-absent">—</div><div class="sl">Absent</div></div>
+    <div class="sb"><div class="sv w" id="att-tardy">—</div><div class="sl">Tardy</div></div>
   </div>
 </div>
 
@@ -186,22 +187,22 @@ tr.sa td:first-child::before{background:var(--amb)}
       <aside id="sb"></aside>
       <main>
         
-<div class="cmdline"><span class="pr">james@grades.scotch.quest:~$</span><span>ls grades/ --sort=period</span></div>
-<div class="sh"><div class="st">Current Grades</div><a href="transcript.html" class="sbtn">[ transcript ]</a></div>
+<div class="cmdline"><span class="pr">james@grades.scotch.quest:~$</span><span>attendance --semester --calendar</span></div>
+<div class="sh"><div class="st">Attendance Rate</div></div>
+<div class="att4">
+  <div class="acard"><div class="anum p" id="att-present2">—</div><div class="pbar"><div class="pfill" id="att-bar" style="width:0%"></div></div><div class="albl">attendance rate</div></div>
+  <div class="acard"><div class="anum p">—</div><div class="albl">days present</div></div>
+  <div class="acard"><div class="anum a">—</div><div class="albl">days absent</div></div>
+  <div class="acard"><div class="anum t">—</div><div class="albl">tardies</div></div>
+</div>
+<div class="sh"><div class="st">April 2026</div></div>
+<div class="card" style="padding:16px;margin-bottom:22px"><div id="att-cal"></div></div>
+<div class="sh"><div class="st">Attendance Log</div></div>
 <div class="tw">
   <table>
-    <thead><tr><th>Per</th><th>Course</th><th class="c">Grade</th><th>Progress</th><th class="r">Score</th><th class="c">Trend</th></tr></thead>
-    <tbody id="courses-tbody"></tbody>
+    <thead><tr><th>Date</th><th>Period</th><th>Course</th><th class="c">Status</th><th>Note</th></tr></thead>
+    <tbody id="att-tbody"></tbody>
   </table>
-</div>
-<div class="g2">
-  <div class="card"><div class="ch"><span><span class="px">//</span> Today's Schedule</span><span style="font-size:10px;color:var(--dim)">Tue · Apr 21</span></div><div class="cb" id="sched-list"></div></div>
-  <div class="card"><div class="ch"><span><span class="px">//</span> Alerts</span><a href="notifications.html" style="font-size:10px;color:var(--red);text-decoration:none">3 new</a></div><div class="cb" id="alerts-list"></div></div>
-  <div class="card"><div class="ch"><span><span class="px">//</span> Recent Grades</span><a href="assignments.html" style="font-size:10px;color:var(--gd);text-decoration:none">[view all]</a></div><div class="cb" id="recent-list"></div></div>
-  <div class="card"><div class="ch"><span><span class="px">//</span> Due Soon</span><a href="assignments.html" style="font-size:10px;color:var(--gd);text-decoration:none">[view all]</a></div><div class="cb" id="upcoming-list"></div></div>
-</div>
-<div class="mo" id="modal" onclick="if(event.target===this)closeModal()">
-  <div class="mbox"><div class="mhead"><div class="mtitle" id="mt"></div><button class="mclose" onclick="closeModal()">[×]</button></div><div class="mbody" id="mb"></div></div>
 </div>
 
         <div class="footer">
@@ -331,86 +332,57 @@ function topbar(crumb){
 
 
 function pageInit(){
-  // GPA
-  const missing=D.courses.filter(c=>c.miss>0).length;
-  document.getElementById('stat-gpa').textContent=D.student.gpa;
-  document.getElementById('stat-cls').textContent=D.courses.length;
-  document.getElementById('stat-miss').textContent=D.courses.reduce((s,c)=>s+c.miss,0);
+  const att=D.attendance;
+  const present=att.filter(a=>a.status==='present').length;
+  const absent=att.filter(a=>a.status==='absent').length;
+  const tardy=att.filter(a=>a.status==='tardy').length;
+  const total=att.length;
+  const pct=Math.round(present/total*100);
 
-  // Courses table
-  const stripe={A:'sg',B:'sc',C:'sy',D:'sy',F:'sr'};
-  document.getElementById('courses-tbody').innerHTML=D.courses.map((c,i)=>`
-    <tr class="${stripe[c.lc]||'sg'}" style="animation:rowIn .3s ease ${i*.05}s both" onclick="openCourse(${i})">
-      <td><span class="ptag">P${c.p}</span></td>
-      <td><div style="font-size:14px;color:var(--gp)">${c.name}</div><div style="font-size:10px;color:var(--dim)">${c.code} · ${c.tchr}</div></td>
-      <td class="c"><span class="gb ${c.lc}">${c.grade}</span></td>
-      <td><div class="bw"><div class="bt"><div class="bf ${c.lc}" style="width:${c.pct}%"></div></div></div></td>
-      <td class="r" style="color:${gc(c.grade)}">${c.pct}%</td>
-      <td class="c" style="color:${gc(c.grade)};font-size:16px">${c.trend}</td>
+  document.getElementById('att-present').textContent=present;
+  document.getElementById('att-absent').textContent=absent;
+  document.getElementById('att-tardy').textContent=tardy;
+  document.getElementById('att-pct').textContent=pct+'%';
+  document.getElementById('att-bar').style.width=pct+'%';
+
+  // April 2026 calendar — April 1 = Wednesday = index 3
+  const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  let cal='<div class="cal">';
+  cal+=days.map(d=>`<div class="calh">${d}</div>`).join('');
+  for(let i=0;i<3;i++) cal+='<div></div>';
+  for(let d=1;d<=30;d++){
+    const ds=`2026-04-${String(d).padStart(2,'0')}`;
+    const dayAtts=att.filter(a=>a.date===ds);
+    const dow=new Date(ds).getDay();
+    let cls='other';
+    if(dow>0&&dow<6){
+      if(dayAtts.some(a=>a.status==='absent')) cls='absent';
+      else if(dayAtts.some(a=>a.status==='tardy')) cls='tardy';
+      else if(dayAtts.length>0) cls='present';
+    }
+    cal+=`<div class="cald ${cls}${d===21?' today':''}">${d}</div>`;
+  }
+  cal+='</div>';
+  cal+=`<div style="display:flex;gap:14px;padding:10px 4px 2px;font-size:10px;color:var(--dim)">
+    <span><span style="color:var(--g)">■</span> present</span>
+    <span><span style="color:var(--red)">■</span> absent</span>
+    <span><span style="color:var(--amb)">■</span> tardy</span>
+  </div>`;
+  document.getElementById('att-cal').innerHTML=cal;
+
+  // Log table
+  document.getElementById('att-tbody').innerHTML=[...att].reverse().map((a,i)=>
+    `<tr class="${a.status==='present'?'sg':a.status==='absent'?'sr':'sy'}" style="animation:rowIn .3s ease ${i*.04}s both">
+      <td>${a.date}</td><td class="dim">P${a.p}</td><td>${a.course}</td>
+      <td class="c">${pill(a.status)}</td>
+      <td class="dim" style="font-size:11px">${a.note||'—'}</td>
     </tr>`).join('');
-
-  // Schedule today
-  const sched=[
-    {p:1,n:'AP Computer Science A',t:'Harrison',r:'214',start:'7:55',end:'8:45',now:false},
-    {p:2,n:'AP Lang & Composition', t:'Reyes',   r:'108',start:'8:50',end:'9:40',now:false},
-    {p:3,n:'Pre-Calculus',          t:'Chen',    r:'306',start:'9:45',end:'10:35',now:false},
-    {p:4,n:'US History',            t:'Kaminsky',r:'201',start:'10:40',end:'11:30',now:true},
-    {p:5,n:'Physics',               t:'Okafor',  r:'118',start:'12:15',end:'1:05',now:false},
-    {p:6,n:'Studio Art',            t:'Park',    r:'004',start:'1:10',end:'2:00',now:false},
-    {p:7,n:'Spanish III',           t:'Vega',    r:'112',start:'2:05',end:'2:55',now:false},
-  ];
-  document.getElementById('sched-list').innerHTML=sched.map(s=>`
-    <div class="sched-row">
-      <div class="sped${s.now?' now':''}">${s.p}</div>
-      <div><div class="scn${s.now?' now':''}">${s.n}${s.now?' <span class="now-pill">NOW</span>':''}</div><div class="scm">Rm ${s.r} · ${s.t}</div></div>
-      <div class="sct${s.now?' now':''}">${s.start}–${s.end}</div>
-    </div>`).join('');
-
-  // Alerts
-  const icons={warn:'⚠',alert:'!',info:'i'};
-  const icls={warn:'w',alert:'a',info:'i'};
-  document.getElementById('alerts-list').innerHTML=D.notifications.map(n=>`
-    <div class="alert-row">
-      <div class="ai ${icls[n.type]}">${icons[n.type]}</div>
-      <div><div class="at">${n.title}</div><div class="am">${n.body} · ${n.date}</div></div>
-    </div>`).join('');
-
-  // Recent assignments
-  const recent=D.assignments.filter(a=>a.status==='graded').slice(0,5);
-  document.getElementById('recent-list').innerHTML=recent.map(a=>{
-    const p=Math.round(a.score/a.max*100);
-    return `<div class="lr"><div class="ll"><div class="ln">${a.name}</div><div class="ls">${a.course.split(' ').slice(0,3).join(' ')} · ${a.date}</div></div><span style="font-family:'VT323',monospace;font-size:20px;color:${sc(p)}">${p}%</span></div>`;
-  }).join('');
-
-  // Upcoming
-  const up=D.assignments.filter(a=>a.status==='upcoming').slice(0,5);
-  document.getElementById('upcoming-list').innerHTML=up.map(a=>`
-    <div class="lr"><div class="ll"><div class="ln">${a.name}</div><div class="ls">${a.course.split(' ').slice(0,3).join(' ')}</div></div><span style="font-size:11px;color:var(--cyn)">${du(a.date)}</span></div>`).join('');
 }
-
-// Course modal
-function openCourse(i){
-  const c=D.courses[i];
-  document.getElementById('mt').textContent=c.name+'_';
-  document.getElementById('mb').innerHTML=`
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px">
-      <div><div style="font-family:'VT323',monospace;font-size:32px;color:${gc(c.grade)};text-shadow:0 0 10px ${gc(c.grade)}">${c.grade}</div><div style="font-size:10px;color:var(--dim);letter-spacing:.12em;text-transform:uppercase">Letter</div></div>
-      <div><div style="font-family:'VT323',monospace;font-size:32px;color:${gc(c.grade)}">${c.pct}%</div><div style="font-size:10px;color:var(--dim);letter-spacing:.12em;text-transform:uppercase">Score</div></div>
-      <div style="padding-top:4px"><span class="ptag">Period ${c.p}</span><br><span style="font-size:10px;color:var(--dim)">${c.cr} credits</span></div>
-    </div>
-    <table style="width:100%;border-collapse:collapse">
-      ${[['Code',c.code],['Teacher',c.tchr],['Room','Rm '+c.room],['Missing',c.miss+' assignments'],['Trend',c.trend+' this term']].map(([k,v])=>`<tr style="border-bottom:1px solid var(--b)"><td style="padding:8px 0;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)">${k}</td><td style="color:var(--gp)">${v}</td></tr>`).join('')}
-    </table>
-    <div style="margin-top:16px"><a href="assignments.html" style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--g);border:1px solid var(--b);padding:6px 16px;border-radius:3px;text-decoration:none">[ view assignments → ]</a></div>`;
-  document.getElementById('modal').classList.add('open');
-}
-function closeModal(){document.getElementById('modal').classList.remove('open');}
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
 
 window.addEventListener('DOMContentLoaded',()=>{
   if(!auth()) return;
-  document.getElementById('tb').innerHTML=topbar(null);
-  document.getElementById('sb').innerHTML=nav('index.html');
+  document.getElementById('tb').innerHTML=topbar('attendance');
+  document.getElementById('sb').innerHTML=nav('attendance.html');
   clock();
   if(typeof pageInit==='function') pageInit();
   document.getElementById('root').style.display='';

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Gradebook — grades.scotch.quest</title>
+<title>Email — grades.scotch.quest</title>
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -147,23 +147,35 @@ tr.sa td:first-child::before{background:var(--amb)}
 </style>
 
 <style>
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:22px}
-.sched-row{display:grid;grid-template-columns:48px 1fr auto;align-items:center;gap:10px;padding:9px 16px;border-bottom:1px solid rgba(57,255,110,.05);cursor:pointer;transition:background .15s}
-.sched-row:hover{background:var(--gf)}
-.sped{font-family:'VT323',monospace;font-size:26px;color:var(--dim);text-align:center}
-.sped.now{color:var(--cyn);text-shadow:0 0 8px var(--cyn)}
-.scn{font-size:13px;color:var(--gp)}
-.scn.now{color:var(--cyn)}
-.scm{font-size:10px;color:var(--dim)}
-.sct{font-size:11px;color:var(--dim);white-space:nowrap}
-.sct.now{color:var(--cyn)}
-.now-pill{font-size:9px;background:rgba(0,255,225,.12);color:var(--cyn);border:1px solid rgba(0,255,225,.3);padding:2px 7px;border-radius:3px}
-.alert-row{display:flex;align-items:flex-start;gap:10px;padding:10px 16px;border-bottom:1px solid rgba(57,255,110,.05);cursor:pointer;transition:background .15s}
-.alert-row:hover{background:var(--gf)}
-.ai{font-size:14px;margin-top:2px}
-.ai.w{color:var(--red)}.ai.a{color:var(--yel)}.ai.i{color:var(--cyn)}
-.at{font-size:13px;color:var(--gp)}
-.am{font-size:10px;color:var(--dim);margin-top:2px}
+.elay{display:grid;grid-template-columns:250px 1fr;border:1px solid var(--b);border-radius:6px;overflow:hidden;min-height:480px;margin-bottom:22px}
+.elist{border-right:1px solid var(--b);background:var(--bg2);overflow-y:auto}
+.eitem{padding:13px 15px;border-bottom:1px solid rgba(57,255,110,.06);cursor:pointer;transition:background .15s}
+.eitem:hover{background:var(--gf)}
+.eitem.active{background:var(--gf);border-left:2px solid var(--g)}
+.eitem.unread .esub{color:var(--gp)}
+.efrow{display:flex;justify-content:space-between;font-size:11px;color:var(--dim);margin-bottom:3px}
+.efname{color:var(--g)}
+.edate{font-size:10px}
+.esub{font-size:13px;color:var(--g);margin-bottom:4px}
+.eprev{font-size:11px;color:var(--dim);overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.udot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--cyn);box-shadow:0 0 4px var(--cyn);margin-right:5px;vertical-align:middle}
+.eview{padding:22px;background:var(--bg);overflow-y:auto}
+.eempty{display:flex;align-items:center;justify-content:center;height:100%;color:var(--dim);font-size:13px}
+.evh{border-bottom:1px solid var(--b);padding-bottom:15px;margin-bottom:18px}
+.evs{font-family:'VT323',monospace;font-size:24px;color:var(--g);text-shadow:0 0 8px var(--g);margin-bottom:9px}
+.evm{display:flex;flex-direction:column;gap:4px;font-size:11px;color:var(--dim)}
+.evmr{display:flex;gap:7px}
+.evml{color:rgba(57,255,110,.4);width:38px}
+.evbody{font-size:13px;color:var(--gp);line-height:1.85;white-space:pre-wrap}
+.eacts{display:flex;gap:7px;margin-top:18px;flex-wrap:wrap}
+.ebtn{font-family:'Share Tech Mono',monospace;font-size:11px;background:none;border:1px solid var(--b);color:var(--dim);padding:5px 14px;border-radius:3px;cursor:pointer;transition:all .15s}
+.ebtn:hover{border-color:var(--bh);color:var(--g)}
+.ebtn.pri{border-color:var(--g);color:var(--g)}.ebtn.pri:hover{background:var(--gf)}
+.cmpwrap{border:1px solid var(--b);border-radius:6px;padding:16px;background:var(--bg2);margin-bottom:16px;display:none}
+.cmpwrap input,.cmpwrap textarea{width:100%;background:var(--bg3);border:1px solid var(--b);color:var(--g);font-family:'Share Tech Mono',monospace;font-size:12px;padding:8px 12px;border-radius:3px;outline:none;margin-bottom:8px;transition:border-color .2s}
+.cmpwrap input:focus,.cmpwrap textarea:focus{border-color:var(--bh)}
+.cmpwrap textarea{min-height:120px;resize:vertical}
+.cmpwrap input::placeholder,.cmpwrap textarea::placeholder{color:rgba(57,255,110,.2)}
 </style>
 </head>
 <body class="crt">
@@ -172,13 +184,11 @@ tr.sa td:first-child::before{background:var(--amb)}
     <div id="tb"></div>
     
 <div class="hband">
-  <div class="hprompt">&gt; grades.scotch.quest — Q4 Spring 2026<span class="cursor">_</span></div>
-  <div class="htitle">Gradebook<span class="cursor" style="font-size:28px">_</span></div>
+  <div class="hprompt">&gt; mail -u james.pliley<span class="cursor">_</span></div>
+  <div class="htitle">Email<span class="cursor" style="font-size:28px">_</span></div>
   <div class="hstats">
-    <div class="sb"><div class="sv ok" id="stat-gpa">—</div><div class="sl">GPA</div></div>
-    <div class="sb"><div class="sv" id="stat-cls">—</div><div class="sl">Classes</div></div>
-    <div class="sb"><div class="sv bad" id="stat-miss">—</div><div class="sl">Missing</div></div>
-    <div class="sb"><div class="sv w">Q4</div><div class="sl">Term</div></div>
+    <div class="sb"><div class="sv">6</div><div class="sl">Messages</div></div>
+    <div class="sb"><div class="sv bad" id="email-unread">—</div><div class="sl">Unread</div></div>
   </div>
 </div>
 
@@ -186,22 +196,24 @@ tr.sa td:first-child::before{background:var(--amb)}
       <aside id="sb"></aside>
       <main>
         
-<div class="cmdline"><span class="pr">james@grades.scotch.quest:~$</span><span>ls grades/ --sort=period</span></div>
-<div class="sh"><div class="st">Current Grades</div><a href="transcript.html" class="sbtn">[ transcript ]</a></div>
-<div class="tw">
-  <table>
-    <thead><tr><th>Per</th><th>Course</th><th class="c">Grade</th><th>Progress</th><th class="r">Score</th><th class="c">Trend</th></tr></thead>
-    <tbody id="courses-tbody"></tbody>
-  </table>
+<div class="cmdline"><span class="pr">james@grades.scotch.quest:~$</span><span>mail --inbox --sort=date</span></div>
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+  <div class="st" style="display:flex;align-items:center;gap:6px"><span style="color:var(--gd)">//</span> Inbox</div>
+  <button class="sbtn" onclick="toggleCompose()">[ + compose ]</button>
 </div>
-<div class="g2">
-  <div class="card"><div class="ch"><span><span class="px">//</span> Today's Schedule</span><span style="font-size:10px;color:var(--dim)">Tue · Apr 21</span></div><div class="cb" id="sched-list"></div></div>
-  <div class="card"><div class="ch"><span><span class="px">//</span> Alerts</span><a href="notifications.html" style="font-size:10px;color:var(--red);text-decoration:none">3 new</a></div><div class="cb" id="alerts-list"></div></div>
-  <div class="card"><div class="ch"><span><span class="px">//</span> Recent Grades</span><a href="assignments.html" style="font-size:10px;color:var(--gd);text-decoration:none">[view all]</a></div><div class="cb" id="recent-list"></div></div>
-  <div class="card"><div class="ch"><span><span class="px">//</span> Due Soon</span><a href="assignments.html" style="font-size:10px;color:var(--gd);text-decoration:none">[view all]</a></div><div class="cb" id="upcoming-list"></div></div>
+<div class="cmpwrap" id="cmpwrap">
+  <div style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);margin-bottom:10px">// new message</div>
+  <input type="text" placeholder="To: teacher@school.edu">
+  <input type="text" placeholder="Subject">
+  <textarea placeholder="Write your message..."></textarea>
+  <div style="display:flex;gap:7px">
+    <button class="ebtn pri" onclick="alert('// demo mode\n// connect your school email API to send real messages')">[ send ]</button>
+    <button class="ebtn" onclick="toggleCompose()">[ cancel ]</button>
+  </div>
 </div>
-<div class="mo" id="modal" onclick="if(event.target===this)closeModal()">
-  <div class="mbox"><div class="mhead"><div class="mtitle" id="mt"></div><button class="mclose" onclick="closeModal()">[×]</button></div><div class="mbody" id="mb"></div></div>
+<div class="elay">
+  <div class="elist" id="elist"></div>
+  <div class="eview" id="eview"><div class="eempty">> select a message_</div></div>
 </div>
 
         <div class="footer">
@@ -330,87 +342,55 @@ function topbar(crumb){
 }
 
 
+let selEmail=null;
+let composing=false;
+
 function pageInit(){
-  // GPA
-  const missing=D.courses.filter(c=>c.miss>0).length;
-  document.getElementById('stat-gpa').textContent=D.student.gpa;
-  document.getElementById('stat-cls').textContent=D.courses.length;
-  document.getElementById('stat-miss').textContent=D.courses.reduce((s,c)=>s+c.miss,0);
-
-  // Courses table
-  const stripe={A:'sg',B:'sc',C:'sy',D:'sy',F:'sr'};
-  document.getElementById('courses-tbody').innerHTML=D.courses.map((c,i)=>`
-    <tr class="${stripe[c.lc]||'sg'}" style="animation:rowIn .3s ease ${i*.05}s both" onclick="openCourse(${i})">
-      <td><span class="ptag">P${c.p}</span></td>
-      <td><div style="font-size:14px;color:var(--gp)">${c.name}</div><div style="font-size:10px;color:var(--dim)">${c.code} · ${c.tchr}</div></td>
-      <td class="c"><span class="gb ${c.lc}">${c.grade}</span></td>
-      <td><div class="bw"><div class="bt"><div class="bf ${c.lc}" style="width:${c.pct}%"></div></div></div></td>
-      <td class="r" style="color:${gc(c.grade)}">${c.pct}%</td>
-      <td class="c" style="color:${gc(c.grade)};font-size:16px">${c.trend}</td>
-    </tr>`).join('');
-
-  // Schedule today
-  const sched=[
-    {p:1,n:'AP Computer Science A',t:'Harrison',r:'214',start:'7:55',end:'8:45',now:false},
-    {p:2,n:'AP Lang & Composition', t:'Reyes',   r:'108',start:'8:50',end:'9:40',now:false},
-    {p:3,n:'Pre-Calculus',          t:'Chen',    r:'306',start:'9:45',end:'10:35',now:false},
-    {p:4,n:'US History',            t:'Kaminsky',r:'201',start:'10:40',end:'11:30',now:true},
-    {p:5,n:'Physics',               t:'Okafor',  r:'118',start:'12:15',end:'1:05',now:false},
-    {p:6,n:'Studio Art',            t:'Park',    r:'004',start:'1:10',end:'2:00',now:false},
-    {p:7,n:'Spanish III',           t:'Vega',    r:'112',start:'2:05',end:'2:55',now:false},
-  ];
-  document.getElementById('sched-list').innerHTML=sched.map(s=>`
-    <div class="sched-row">
-      <div class="sped${s.now?' now':''}">${s.p}</div>
-      <div><div class="scn${s.now?' now':''}">${s.n}${s.now?' <span class="now-pill">NOW</span>':''}</div><div class="scm">Rm ${s.r} · ${s.t}</div></div>
-      <div class="sct${s.now?' now':''}">${s.start}–${s.end}</div>
-    </div>`).join('');
-
-  // Alerts
-  const icons={warn:'⚠',alert:'!',info:'i'};
-  const icls={warn:'w',alert:'a',info:'i'};
-  document.getElementById('alerts-list').innerHTML=D.notifications.map(n=>`
-    <div class="alert-row">
-      <div class="ai ${icls[n.type]}">${icons[n.type]}</div>
-      <div><div class="at">${n.title}</div><div class="am">${n.body} · ${n.date}</div></div>
-    </div>`).join('');
-
-  // Recent assignments
-  const recent=D.assignments.filter(a=>a.status==='graded').slice(0,5);
-  document.getElementById('recent-list').innerHTML=recent.map(a=>{
-    const p=Math.round(a.score/a.max*100);
-    return `<div class="lr"><div class="ll"><div class="ln">${a.name}</div><div class="ls">${a.course.split(' ').slice(0,3).join(' ')} · ${a.date}</div></div><span style="font-family:'VT323',monospace;font-size:20px;color:${sc(p)}">${p}%</span></div>`;
-  }).join('');
-
-  // Upcoming
-  const up=D.assignments.filter(a=>a.status==='upcoming').slice(0,5);
-  document.getElementById('upcoming-list').innerHTML=up.map(a=>`
-    <div class="lr"><div class="ll"><div class="ln">${a.name}</div><div class="ls">${a.course.split(' ').slice(0,3).join(' ')}</div></div><span style="font-size:11px;color:var(--cyn)">${du(a.date)}</span></div>`).join('');
+  const unread=D.emails.filter(e=>!e.read).length;
+  document.getElementById('email-unread').textContent=unread;
+  renderList();
 }
 
-// Course modal
-function openCourse(i){
-  const c=D.courses[i];
-  document.getElementById('mt').textContent=c.name+'_';
-  document.getElementById('mb').innerHTML=`
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:18px">
-      <div><div style="font-family:'VT323',monospace;font-size:32px;color:${gc(c.grade)};text-shadow:0 0 10px ${gc(c.grade)}">${c.grade}</div><div style="font-size:10px;color:var(--dim);letter-spacing:.12em;text-transform:uppercase">Letter</div></div>
-      <div><div style="font-family:'VT323',monospace;font-size:32px;color:${gc(c.grade)}">${c.pct}%</div><div style="font-size:10px;color:var(--dim);letter-spacing:.12em;text-transform:uppercase">Score</div></div>
-      <div style="padding-top:4px"><span class="ptag">Period ${c.p}</span><br><span style="font-size:10px;color:var(--dim)">${c.cr} credits</span></div>
+function renderList(){
+  document.getElementById('elist').innerHTML=D.emails.map((e,i)=>
+    `<div class="eitem${!e.read?' unread':''}${selEmail===i?' active':''}" onclick="openEmail(${i})">
+      <div class="efrow"><span class="efname">${!e.read?'<span class="udot"></span>':''}${e.from}</span><span class="edate">${e.date}</span></div>
+      <div class="esub">${e.subject}</div>
+      <div class="eprev">${e.preview}</div>
+    </div>`).join('');
+}
+
+function openEmail(i){
+  selEmail=i;
+  const e=D.emails[i];
+  e.read=true;
+  renderList();
+  document.getElementById('eview').innerHTML=`
+    <div class="evh">
+      <div class="evs">${e.subject}_</div>
+      <div class="evm">
+        <div class="evmr"><span class="evml">From:</span>${e.from}</div>
+        <div class="evmr"><span class="evml">To:</span>james.pliley@school.edu</div>
+        <div class="evmr"><span class="evml">Date:</span>${e.date}</div>
+      </div>
     </div>
-    <table style="width:100%;border-collapse:collapse">
-      ${[['Code',c.code],['Teacher',c.tchr],['Room','Rm '+c.room],['Missing',c.miss+' assignments'],['Trend',c.trend+' this term']].map(([k,v])=>`<tr style="border-bottom:1px solid var(--b)"><td style="padding:8px 0;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim)">${k}</td><td style="color:var(--gp)">${v}</td></tr>`).join('')}
-    </table>
-    <div style="margin-top:16px"><a href="assignments.html" style="font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--g);border:1px solid var(--b);padding:6px 16px;border-radius:3px;text-decoration:none">[ view assignments → ]</a></div>`;
-  document.getElementById('modal').classList.add('open');
+    <div class="evbody">${e.body}</div>
+    <div class="eacts">
+      <button class="ebtn pri" onclick="toggleCompose()">[ reply ]</button>
+      <button class="ebtn">[ forward ]</button>
+      <button class="ebtn" style="color:var(--red);border-color:rgba(255,68,68,.3)">[ delete ]</button>
+    </div>`;
 }
-function closeModal(){document.getElementById('modal').classList.remove('open');}
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+
+function toggleCompose(){
+  const w=document.getElementById('cmpwrap');
+  w.style.display=w.style.display==='none'||!w.style.display?'block':'none';
+}
 
 window.addEventListener('DOMContentLoaded',()=>{
   if(!auth()) return;
-  document.getElementById('tb').innerHTML=topbar(null);
-  document.getElementById('sb').innerHTML=nav('index.html');
+  document.getElementById('tb').innerHTML=topbar('email');
+  document.getElementById('sb').innerHTML=nav('email.html');
   clock();
   if(typeof pageInit==='function') pageInit();
   document.getElementById('root').style.display='';
