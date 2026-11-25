@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Finds a playable MP4 file for an Internet Archive item. -->
+<component name="ResolveTask" extends="Task">
+  <interface>
+    <field id="identifier" type="string" />
+    <field id="result" type="assocarray" />
+  </interface>
+  <script type="text/brightscript" uri="pkg:/components/util/Net.brs" />
+  <script type="text/brightscript" uri="pkg:/components/ResolveTask.brs" />
+</component>

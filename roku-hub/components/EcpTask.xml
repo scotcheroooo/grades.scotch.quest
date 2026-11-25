@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Talks to the Roku's own External Control Protocol (port 8060) to list and launch installed apps. -->
+<component name="EcpTask" extends="Task">
+  <interface>
+    <field id="appId" type="string" />
+    <field id="result" type="assocarray" />
+  </interface>
+  <script type="text/brightscript" uri="pkg:/components/util/Net.brs" />
+  <script type="text/brightscript" uri="pkg:/components/EcpTask.brs" />
+</component>

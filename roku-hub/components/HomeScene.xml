@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component name="HomeScene" extends="Scene">
+  <script type="text/brightscript" uri="pkg:/components/HomeScene.brs" />
+  <children>
+    <Rectangle width="1920" height="1080" color="0x0E1116FF" />
+    <Label id="title" text="Home Hub" translation="[100,48]" font="font:LargeBoldSystemFont" color="0xFFFFFFFF" />
+    <Label id="subtitle" text="Your apps, free movies and home media - one remote"
+           translation="[100,112]" font="font:SmallSystemFont" color="0x8B98A8FF" />
+    <RowList id="rows"
+             translation="[100,170]"
+             itemComponentName="HubItem"
+             numRows="3"
+             itemSize="[1720,300]"
+             itemSpacing="[0,24]"
+             rowItemSize="[[320,240]]"
+             rowItemSpacing="[[28,0]]"
+             showRowLabel="[true]"
+             rowLabelOffset="[[0,10]]"
+             rowLabelColor="0xE6EDF3FF"
+             rowLabelFont="font:MediumBoldSystemFont"
+             rowFocusAnimationStyle="floatingFocus"
+             vertFocusAnimationStyle="fixedFocus" />
+    <Label id="status" translation="[100,1020]" width="1720" font="font:SmallSystemFont" color="0xF2C94CFF" />
+    <Video id="player" width="1920" height="1080" visible="false" />
+  </children>
+</component>

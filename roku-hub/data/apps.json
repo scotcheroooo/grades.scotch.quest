@@ -1,0 +1,18 @@
+[
+  { "title": "Netflix", "id": 12 },
+  { "title": "YouTube", "id": 837 },
+  { "title": "Prime Video", "id": 13 },
+  { "title": "Disney+", "id": 291097 },
+  { "title": "Hulu", "id": 2285 },
+  { "title": "Max", "id": 61322 },
+  { "title": "Peacock", "id": 593099 },
+  { "title": "Paramount+", "id": 31440 },
+  { "title": "Apple TV", "id": 551012 },
+  { "title": "The Roku Channel (free)", "id": 151908 },
+  { "title": "Pluto TV (free)", "id": 74519 },
+  { "title": "Tubi (free)", "id": 41468 },
+  { "title": "Plex", "id": 13535 },
+  { "title": "Jellyfin", "id": 592369 },
+  { "title": "Crunchyroll", "id": 2595 },
+  { "title": "Spotify", "id": 22297 }
+]

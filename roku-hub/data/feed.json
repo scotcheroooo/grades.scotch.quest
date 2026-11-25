@@ -1,0 +1,33 @@
+{
+  "rows": [
+    {
+      "title": "Open Movies (Creative Commons)",
+      "items": [
+        {
+          "title": "Big Buck Bunny",
+          "poster": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/BigBuckBunny.jpg",
+          "url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+          "format": "mp4"
+        },
+        {
+          "title": "Sintel",
+          "poster": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/Sintel.jpg",
+          "url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4",
+          "format": "mp4"
+        },
+        {
+          "title": "Tears of Steel",
+          "poster": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/TearsOfSteel.jpg",
+          "url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4",
+          "format": "mp4"
+        },
+        {
+          "title": "Elephants Dream",
+          "poster": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/ElephantsDream.jpg",
+          "url": "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4",
+          "format": "mp4"
+        }
+      ]
+    }
+  ]
+}
