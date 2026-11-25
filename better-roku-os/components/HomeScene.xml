@@ -3,9 +3,12 @@
   <script type="text/brightscript" uri="pkg:/components/HomeScene.brs" />
   <children>
     <Rectangle width="1920" height="1080" color="0x0E1116FF" />
-    <Label id="title" text="Home Hub" translation="[100,48]" font="font:LargeBoldSystemFont" color="0xFFFFFFFF" />
-    <Label id="subtitle" text="Your apps, free movies and home media - one remote"
+    <Label id="title" text="Better Roku OS" translation="[100,48]" font="font:LargeBoldSystemFont" color="0xFFFFFFFF" />
+    <Label id="subtitle" text="Press * on an app to add it to Favorites"
            translation="[100,112]" font="font:SmallSystemFont" color="0x8B98A8FF" />
+    <Label id="clock" translation="[1420,52]" width="400" horizAlign="right" font="font:LargeSystemFont" color="0xFFFFFFFF" />
+    <Label id="date" translation="[1420,112]" width="400" horizAlign="right" font="font:SmallSystemFont" color="0x8B98A8FF" />
+    <Timer id="clockTimer" repeat="true" duration="10" />
     <RowList id="rows"
              translation="[100,170]"
              itemComponentName="HubItem"

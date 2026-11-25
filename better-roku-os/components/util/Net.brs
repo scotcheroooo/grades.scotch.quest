@@ -5,7 +5,7 @@ function newXfer(url as string) as object
     x.SetCertificatesFile("common:/certs/ca-bundle.crt")
     x.InitClientCertificates()
     x.RetainBodyOnError(true)
-    x.AddHeader("User-Agent", "HomeHub-Roku/1.0")
+    x.AddHeader("User-Agent", "BetterRokuOS/1.0")
     return x
 end function
 

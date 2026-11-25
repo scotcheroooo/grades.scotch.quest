@@ -1,16 +1,24 @@
-' Home Hub main screen.
-' Sections (in display order): apps, feed, archive, settings.
+' Better Roku OS main screen.
+' Sections (in display order): favorites, apps, feed, archive, settings.
 
 sub init()
     m.rows = m.top.findNode("rows")
     m.player = m.top.findNode("player")
     m.status = m.top.findNode("status")
-    m.registry = CreateObject("roRegistrySection", "HomeHub")
+    m.registry = CreateObject("roRegistrySection", "BetterRokuOS")
+    m.clock = m.top.findNode("clock")
+    m.date = m.top.findNode("date")
+    m.clockTimer = m.top.findNode("clockTimer")
+    m.clockTimer.observeField("fire", "updateClock")
+    m.clockTimer.control = "start"
+    updateClock()
+    m.favs = loadFavs()
+    m.allApps = []
 
     m.rows.observeField("rowItemSelected", "onItemSelected")
     m.player.observeField("state", "onPlayerState")
 
-    m.sections = { apps: invalid, feed: invalid, archive: invalid, settings: settingsRows() }
+    m.sections = { favs: invalid, apps: invalid, feed: invalid, archive: invalid, settings: settingsRows() }
     m.messages = {}
 
     refreshApps()
@@ -32,7 +40,9 @@ end sub
 
 sub onApps()
     r = m.appsTask.result
-    m.sections.apps = [{ title: "Your Streaming Apps", items: r.items }]
+    m.allApps = r.items
+    m.sections.apps = [{ title: "All Apps", items: r.items }]
+    buildFavs()
     if r.ok
         setMessage("apps", "")
     else
@@ -92,7 +102,7 @@ sub rebuild()
     if m.rows.content <> invalid then focused = m.rows.rowItemFocused
 
     root = CreateObject("roSGNode", "ContentNode")
-    for each name in ["apps", "feed", "archive", "settings"]
+    for each name in ["favs", "apps", "feed", "archive", "settings"]
         rows = m.sections[name]
         if rows <> invalid
             for each r in rows
@@ -242,7 +252,7 @@ function onKeyEvent(key as string, press as boolean) as boolean
         return true
     end if
     if key = "options" and not m.player.visible
-        runAction("help")
+        toggleFocusedFav()
         return true
     end if
     return false
@@ -267,12 +277,13 @@ sub runAction(action as string)
         refreshApps()
     else if action = "help"
         dlg = CreateObject("roSGNode", "StandardMessageDialog")
-        dlg.title = "Home Hub Help"
+        dlg.title = "Better Roku OS Help"
         dlg.message = [
-            "Your Streaming Apps: opens apps installed on this Roku. Sign in to each with your own account."
+            "All Apps: opens the real Netflix, Hulu, Disney+ and other apps installed on this Roku. Sign in with your own subscriptions."
+            "Favorites: press * on any app to pin or unpin it at the top."
             "Free Public Domain rows: legal free films from the Internet Archive."
             "Home Media: point 'Set Home Media Feed URL' at a JSON or M3U file on your network."
-            "Press Back to stop a video. Press * for this help."
+            "Press Back to stop a video."
         ]
         dlg.buttons = ["OK"]
         dlg.observeField("buttonSelected", "closeDialog")
@@ -297,4 +308,74 @@ end sub
 
 sub closeDialog()
     m.top.dialog.close = true
+end sub
+
+' ---------------- clock ----------------
+
+sub updateClock()
+    dt = CreateObject("roDateTime")
+    dt.ToLocalTime()
+    h = dt.GetHours()
+    ampm = "AM"
+    if h >= 12 then ampm = "PM"
+    h = h MOD 12
+    if h = 0 then h = 12
+    mins = dt.GetMinutes().ToStr()
+    if Len(mins) < 2 then mins = "0" + mins
+    m.clock.text = h.ToStr() + ":" + mins + " " + ampm
+    m.date.text = dt.GetWeekday() + ", " + dt.AsDateString("long-date")
+end sub
+
+' ---------------- favorites ----------------
+
+function loadFavs() as object
+    if m.registry.Exists("favs")
+        favs = ParseJson(m.registry.Read("favs"))
+        if favs <> invalid then return favs
+    end if
+    return []
+end function
+
+sub saveFavs()
+    m.registry.Write("favs", FormatJson(m.favs))
+    m.registry.Flush()
+end sub
+
+sub buildFavs()
+    byId = {}
+    for each a in m.allApps
+        byId[a.appId] = a
+    end for
+    items = []
+    for each id in m.favs
+        if byId.DoesExist(id) then items.Push(byId[id])
+    end for
+    m.sections.favs = [{ title: "Favorites", items: items }]
+end sub
+
+sub toggleFocusedFav()
+    f = m.rows.rowItemFocused
+    if f = invalid or f.Count() <> 2 or m.rows.content = invalid then return
+    row = m.rows.content.getChild(f[0])
+    if row = invalid then return
+    item = row.getChild(f[1])
+    if item = invalid or item.kind <> "app"
+        setMessage("play", "Only apps can be added to Favorites.")
+        return
+    end if
+    newFavs = []
+    removed = false
+    for each id in m.favs
+        if id = item.appId then removed = true else newFavs.Push(id)
+    end for
+    if not removed then newFavs.Push(item.appId)
+    m.favs = newFavs
+    saveFavs()
+    buildFavs()
+    if removed
+        setMessage("play", item.title + " removed from Favorites")
+    else
+        setMessage("play", item.title + " added to Favorites")
+    end if
+    rebuild()
 end sub

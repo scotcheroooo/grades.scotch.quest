@@ -1,15 +1,21 @@
-# Home Hub — free, open-source Roku home screen
+# Better Roku OS — a free, open-source home screen for Roku
 
-One channel that puts everything on one screen:
+A replacement home screen that runs on your existing Roku. Your real Netflix, Hulu, Disney+,
+Max, Prime Video, YouTube… apps all appear here — open one and sign in with your own subscription.
+
+> **What it is and isn't:** Roku devices only boot Roku-signed firmware, so no one can swap out the
+> actual operating system. Better Roku OS is a channel that acts as your home screen on top of it.
+> Paid apps still need your own subscription.
 
 | Row | What it does |
 |---|---|
-| **Your Streaming Apps** | Lists every app installed on your Roku (Netflix, YouTube, Disney+, Pluto TV…) with its real icon. Select one to open it — you sign in with your own account. |
+| **Favorites** | Your pinned apps. Press **✱** on any app to pin/unpin it. |
+| **All Apps** | Every app installed on your Roku (Netflix, Hulu, Disney+, Pluto TV…) with its real icon. Select one to open it. |
 | **Free Public Domain Movies / Classic TV / Classic Cartoons** | Legal, free films streamed straight from the Internet Archive. |
 | **Open Movies + Home Media** | Plays a JSON or M3U feed — the built-in one has Creative Commons films; point it at your own files or legal free IPTV playlist. |
 | **Settings** | Set your feed URL, refresh apps, help. |
 
-> Home Hub does not unlock paid services. Paid apps still need your own subscription; it simply gives you one launcher for them plus free, legal content.
+Also: a clock and date in the corner, and everything remembered between launches.
 
 ## Install (sideload, takes ~5 minutes)
 
@@ -21,9 +27,9 @@ One channel that puts everything on one screen:
    ```bash
    ./package.sh 192.168.1.50 yourDevPassword
    ```
-   Or run `./package.sh`, open `http://<roku-ip>` in a browser, log in as `rokudev`, and upload `out/homehub.zip`.
+   Or run `./package.sh`, open `http://<roku-ip>` in a browser, log in as `rokudev`, and upload `out/better-roku-os.zip`.
 
-Home Hub then appears in the Roku's channel list as **dev**.
+Better Roku OS then appears in the Roku's channel list as **dev**. Move it to the top of your Roku home screen (✱ → Move channel) so it's the first thing you open.
 
 ## Your own home media feed
 
@@ -46,7 +52,7 @@ open-source **Jellyfin** app and server — it appears in the apps row automatic
 ## Remote keys
 - **OK** – open app / play
 - **Back** – stop video
-- **\*** – help
+- **✱** – add/remove the focused app from Favorites
 
 ## Project layout
 ```

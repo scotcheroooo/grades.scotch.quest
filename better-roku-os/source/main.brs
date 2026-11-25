@@ -1,4 +1,4 @@
-' Home Hub - free & open source Roku home screen (MIT License)
+' Better Roku OS - free & open source Roku home screen (MIT License)
 sub Main()
     screen = CreateObject("roSGScreen")
     port = CreateObject("roMessagePort")
